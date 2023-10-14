@@ -10,18 +10,18 @@ async function updateUser(user) {
 }
 
 async function getUser(userId) {
-    try {
-        const query = 'SELECT * FROM users WHERE id = $1';
-        const result = await db.oneOrNone(query, userId);
-    
-        if (result) {
-          return result;
-        } else {
-          return null; // User not found
-        }
-      } catch (error) {
-        throw error;
-      }
+  try {
+    const query = 'SELECT * FROM users WHERE id = $1';
+    const result = await db.query(query, [userId]);
+
+    if (result && result.rows && result.rows.length > 0) {
+      return result.rows[0]; // Assuming you want to return the first user
+    } else {
+      return null; // User not found
+    }
+  } catch (error) {
+    throw error;
+  }
 }
 
 module.exports = {
