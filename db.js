@@ -7,15 +7,15 @@ if (process.env.NODE_ENV && process.env.NODE_ENV != 'localhost') {
   // Use the DATABASE_URL environment variable provided by your hosting platform (e.g., Render.com)
   
     pool = new Pool({
-    user: process.env.DATABASE_USERNAME_PROD,
-    host: process.env.DATABASE_HOST_PROD,
-    database: process.env.DATABASE_NAME_PROD,
-    password: process.env.DATABASE_PASS_PROD,
-    port: process.env.DATABASE_PORT_PROD,
+    user: process.env.DEPLOY_DATABASE_USERNAME_PROD,
+    host: process.env.DEPLOY_DATABASE_HOST_PROD,
+    database: process.env.DEPLOY_DATABASE_NAME_PROD,
+    password: process.env.DEPLOY_DATABASE_PASS_PROD,
+    port: process.env.DEPLOY_DATABASE_PORT_PROD,
     ssl: { rejectUnauthorized: false }, // Only if your hosting platform requires it
   });
   console.log(pool)
-  console.log(process.env.DATABASE_PORT_PROD)
+  console.log(process.env.DEPLOY_DATABASE_PORT_PROD)
 } else {
   // Use local development configuration
   pool = new Pool({
