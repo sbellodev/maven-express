@@ -313,14 +313,13 @@ async function getNearUsers(cityId) {
   try {
     // TODO: Use CityId
     const query = `
-      SELECT u.id, u.name, a.animal_name, ai.img_array, ai.img_type, 0 as distance
+      SELECT u.id, u.name, u.animal_name, ai.img_array, ai.img_type, 0 as distance
       FROM (
         SELECT user_id, array_to_string(array_agg(img_encoded), ',') AS img_array,
         array_to_string(array_agg(img_type), ',') AS img_type
         FROM animalimage
         GROUP BY user_id
       ) ai
-      INNER JOIN animal a ON (a.user_id = ai.user_id)
       INNER JOIN users u ON (u.id = ai.user_id)
       WHERE u.id > 1
     `;
