@@ -5,7 +5,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser'); // Middleware for parsing JSON data
 
 // Apply the CORS middleware before defining routes
-const allowedOrigins = ['http://localhost:3000', 'https://santibello.es/michiapp'];
+const allowedOrigins = ['http://localhost:3000', 'https://santibello.es', 'https://santibello.es/michiapp'];
 app.use(cors({
   origin: allowedOrigins,
 }));
