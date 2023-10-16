@@ -16,6 +16,25 @@ router.get('/usersettings/:userId', async (req, res) => {
   }
 });
 
+router.post('/addmessage', async (req, res) => {
+  try {
+    const userId = req.body.userId; // Assuming you send the userId in the request body
+    const chatId = req.body.chatId; // Assuming you send the chatId in the request body
+    const message = req.body.message; // Assuming you send the message in the request body
+
+    const result = await userController.addMessage(userId, chatId, message);
+
+    if (result) {
+      res.status(201).json({ message: result.message }); // Respond with the newly added message
+    } else {
+      res.status(404).json({ message: 'Message not added' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 router.post('/adduser', async (req, res) => {
   try {
     const user = req.body; // Assuming the user data is sent in the request body
@@ -33,9 +52,11 @@ router.post('/adduser', async (req, res) => {
   }
 });
 
-router.put('/updateusersettings/:userId', async (req, res) => {
+router.put('/updateusersettings/', async (req, res) => {
   try {
-    const userId = parseInt(req.params.userId, 10); // Convert the ID parameter to an integer
+    const { id } = req.body;
+    const rawUserId = id || null
+    const userId = parseInt(rawUserId, 10); // Convert the ID parameter to an integer
     const newSettings = req.body; // Assuming the new settings are sent in the request body
     const result = await userController.updateUserSettings(userId, newSettings);
 
@@ -72,7 +93,7 @@ router.get('/userlogin/:email/:password', async (req, res) => {
 router.post('/deleteimage', async (req, res) => {
   try {
     const { id, userId } = req.body;
-
+    if(!id || !userId) return;
     // Call the userController to delete the image
     const result = await userController.deleteImage(id, userId);
 

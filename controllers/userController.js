@@ -107,6 +107,7 @@ async function getUserChatPreviews(userId) {
         JOIN users AS u ON (cr.user1_id = u.id OR cr.user2_id = u.id)
         WHERE
             (cr.user1_id = $1 OR cr.user2_id = $1)
+            AND u.id != $1
             AND cl.created_at = (
                 SELECT MAX(cl2.created_at) 
                 FROM chatlogs cl2
@@ -138,26 +139,54 @@ async function getUserChatPreviews(userId) {
 
 async function getChatByUserId(chatId) {
   try {
-    // Execute the SQL query with userId as a parameter
-    const query = ` 
-      SELECT
-        cl.id AS message_id,
-        u.id AS user_id,
-        u.name,
-        cl.message,
-        cl.created_at,
-        ai.img_encoded,
-        ai.img_type 
-      FROM chatlogs cl
-      JOIN users u ON cl.user_id = u.id
-        LEFT JOIN animalimage ai ON cl.user_id = ai.user_id
-      WHERE cl.chatroom_id = $1
-      ORDER BY cl.created_at`;
+  // Query to get chat messages
+  const chatQuery = `
+    SELECT DISTINCT ON (cl.id)
+    cl.id AS message_id,
+    u.id AS user_id,
+    u.name,
+    cl.message,
+    cl.created_at,
+    ai.img_encoded,
+    ai.img_type 
+    FROM chatlogs cl
+    JOIN users u ON cl.user_id = u.id
+    LEFT JOIN animalimage ai ON u.id = ai.user_id
+    WHERE cl.chatroom_id = $1
+    ORDER BY cl.id, cl.created_at
+  `;
 
-    const result = await db.query(query, [chatId]);
+  // Query to get distinct user IDs
+  const userQuery = `
+    SELECT user1_id, user2_id
+    FROM chatroom
+    WHERE id = $1;
+  `;
 
-    // Process the result as needed
-    return result.rows;
+  const chatResult = await db.query(chatQuery, [chatId]);
+  const userResult = await db.query(userQuery, [chatId]);
+
+  // Process the results and combine them into a single object
+  const chatMessages = chatResult.rows;
+  const chatRoomUserIds = userResult.rows;
+
+  return { chatMessages, chatRoomUserIds };
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+async function addMessage(userId, chatId, message) {
+  try {
+    // Your code to insert a new message into the chat log
+    const query = 'INSERT INTO chatlogs (chatroom_id, user_id, message, created_at) VALUES ($1, $2, $3, NOW())';
+    const result = await db.query(query, [chatId, userId, message]);
+    if(result) {
+      return { success: true, message: 'Message  added' };
+    } else {
+      return null;
+    }
   } catch (error) {
     console.error(error);
     throw error;
@@ -454,5 +483,6 @@ module.exports = {
   getUserChatPreviews,
   createInitialChatLog,
   getChatRoomByUsersId,
-  getNumImagesById
+  getNumImagesById,
+  addMessage
 };

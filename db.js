@@ -14,8 +14,6 @@ if (process.env.NODE_ENV && process.env.NODE_ENV != 'localhost') {
     port: process.env.DEPLOY_DATABASE_PORT_PROD,
     ssl: { rejectUnauthorized: false }, // Only if your hosting platform requires it
   });
-  console.log(pool)
-  console.log(process.env.DEPLOY_DATABASE_PORT_PROD)
 } else {
   // Use local development configuration
   pool = new Pool({
@@ -25,8 +23,6 @@ if (process.env.NODE_ENV && process.env.NODE_ENV != 'localhost') {
     password: process.env.DB_PASS,
     port: process.env.DB_PORT,
   });
-  console.log(pool)
-  console.log(process.env.DB_USER)
 }
 
 
