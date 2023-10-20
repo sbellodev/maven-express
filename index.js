@@ -24,7 +24,8 @@ const allowedOrigins = [
   'https://santibello.es', 
   'https://santibello.es/michiapp',
   'ws://localhost:3500', 
-  'wss://michiapp-express.onrender.com'
+  'wss://michiapp-express.onrender.com',
+  'ws://michiapp-express.onrender.com'
 ];
 
 app.use(cors({
