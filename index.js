@@ -23,8 +23,8 @@ const allowedOrigins = [
   'http://localhost:3000', 
   'https://santibello.es', 
   'https://santibello.es/michiapp',
-  'wss://localhost:3500', 
-  'wss://michiapp-express.onrender.com'
+  'ws://localhost:3500', 
+  'ws://michiapp-express.onrender.com'
 ];
 
 app.use(cors({
