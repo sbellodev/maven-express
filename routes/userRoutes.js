@@ -16,7 +16,7 @@ router.get('/usersettings/:userId', async (req, res) => {
   }
 });
 
-router.post('/addmessage', async (req, res) => {
+router.post('/addmessage/', async (req, res) => {
   try {
     const userId = req.body.userId; // Assuming you send the userId in the request body
     const chatId = req.body.chatId; // Assuming you send the chatId in the request body
